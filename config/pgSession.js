@@ -5,9 +5,7 @@ const genFunc = require('connect-pg-simple')
 function createSessionStore(){
   
 const PostgresqlStore = genFunc(session);
-// const sessionStore = new PostgresqlStore({
-//   conString: 'postgres://asad:asad123@localhost:5432/online-shop'
-// });
+
 const sessionStore = new PostgresqlStore({
   conString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 });
