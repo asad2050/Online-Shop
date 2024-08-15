@@ -1,0 +1,13 @@
+.env
+node_modules
+data/pgadmin/
+data/db/
+
+.vscode
+onlineShop.session.sql
+*.yml
+product-data/images/*.png
+product-data/images/*.jpeg
+product-data/images/*.jpg
+
+
