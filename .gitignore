@@ -1,0 +1,5 @@
+.env
+node_modules
+product-data/images/*.jpg
+product-data/images/*.jpeg
+product-data/images/*.png
