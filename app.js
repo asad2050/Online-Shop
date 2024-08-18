@@ -1,9 +1,8 @@
 const express = require('express');
-const csrf= require('csurf');
 const expressSession= require('express-session');
 const createSessionConfig = require('./config/pgSession');
 const {pool} = require('./data/pgDatabase');
-const addCsrfTokenMiddleware = require('./middlewares/csrf-token');
+const {csrfMiddleware} =require('./middlewares/token.js');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
 const path = require('path');
 const checkAuthStatus = require('./middlewares/check-auth');
@@ -27,12 +26,10 @@ app.use('/products/assets',express.static('product-data'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());//json()returns a function which is a middleware
 const sessionConfig=createSessionConfig();
-// app.use(expressSession(sessionConfig));
 app.use(expressSession(sessionConfig))
-app.use(csrf());
 app.use(cartMiddlware);
 app.use(updateCartPriceMiddleware);
-app.use(addCsrfTokenMiddleware);
+app.use(csrfMiddleware);
 app.use(checkAuthStatus);
 app.use(baseRoutes);
 app.use(authRoutes);
@@ -42,9 +39,13 @@ app.use('/orders',protectRoutesMiddleware,ordersRoutes);
 app.use('/admin',protectRoutesMiddleware,adminRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+let PORT = 3000;
+if(process.env.PORT){
+  PORT = process.env.PORT;
+}
 
 pool.query("SELECT NOW()").then(function() {
-    app.listen(3000);
+    app.listen(PORT);
 }).catch(function(error){
     console.log("Failed to connect to the database.");
     console.log(error);

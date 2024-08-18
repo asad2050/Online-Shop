@@ -4,6 +4,6 @@ const router = express.Router();
 
 router.get('/products',productController.getAllProducts);
 
-router.get('/products/:id',productController.getProductDetails);
+router.get('/products/:id',productController.getProductDetails);//needs sanitization
 
 module.exports = router;

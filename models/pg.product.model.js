@@ -13,7 +13,6 @@ class Product {
       this.image = productData.image; 
     }
    //name of image file
-    this.updateImageData();
     if (productData.id) {
       this.id = productData.id;
     }
@@ -55,10 +54,7 @@ class Product {
     return products.map((product) => new Product(product));
   }
 
-  updateImageData() {
-    this.imagePath = `product-data/images/${this.image}`; //from root folder to image
-    this.imageUrl = `/products/assets/images/${this.image}`;
-  }
+
 
   async save() {
     let query;
@@ -108,7 +104,6 @@ class Product {
 
   async replaceImage(newImage) {
     this.image = newImage; //name of image
-    this.updateImageData();
     const query = {
       text: "UPDATE products SET image = $1 WHERE id = $2",
       values: [this.image, this.id],

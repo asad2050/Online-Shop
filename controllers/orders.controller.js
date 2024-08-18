@@ -1,6 +1,4 @@
-const stripe = require('stripe')('sk_test_51ORaokSE6Aj5Hy6SAgyotqNi5ZoRH69Z5oUIOMyZ7IfcqVmWoooV2K82TMK8pUBconkLHPitx0Oxd5arQ6tJUhfC00Lt67j7Vz');
-// const Order = require('../models/order.model');
-// const User = require('../models/user.model');
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 const Order = require('../models/pg.order.model');
 const User = require('../models/pg.user.model');
 async function getOrders(req, res,next) {

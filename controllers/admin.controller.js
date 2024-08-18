@@ -1,8 +1,6 @@
-// const Product = require('../models/product.model');
-// const Order = require('../models/order.model');
 const Product = require('../models/pg.product.model');
 const Order = require('../models/pg.order.model');
-
+const {uploadOnCloudinary} = require('../util/cloudinary');
 async function getProducts(req, res, next) {
   try {
     const products = await Product.findAll();
@@ -18,13 +16,29 @@ function getNewProduct(req, res) {
 }
 
 async function createNewProduct(req, res, next) {
+  let productImage;
+  try{
+    const imageLocalPath = req.file.path;
+    if(!imageLocalPath){
+      throw new Error("Image file is required")
+    }
+    console.log(imageLocalPath)
+     productImage = await uploadOnCloudinary(imageLocalPath)
+    if(!productImage && !productImage?.url){
+      throw new Error("Image upload failed")
+    }
+    
+  }catch(err){
+    next(err);
+    return;
+  }
   const product = new Product({
     ...req.body,
-    image: req.file.filename,
+    image: productImage.url,
   });
 
+
   try {
- 
     await product.save();
   } catch (error) {
     next(error);
@@ -44,15 +58,38 @@ async function getUpdateProduct(req, res, next) {
 }
 
 async function updateProduct(req, res, next) {
-  console.log(req.params)
-  const product = new Product({
-    ...req.body,
-    id: req.params.id,
-  });
+  
+  const imageLocalPath = req.file?.path;
+  let product;
+  let productImage;
+  if(imageLocalPath){
+    try{
+   
+      console.log(imageLocalPath)
+       productImage = await uploadOnCloudinary(imageLocalPath)
+      product = new Product({
+        ...req.body,
+        
+        id: req.params.id,
+      });
+      if(!productImage && !productImage?.url){
+        throw new Error("Image upload failed")
+      }
+     
+      
+    }catch(err){
+      next(err);
+      return;
+    }
 
-  if (req.file) {
-    product.replaceImage(req.file.filename);
   }
+  else{
+    product = new Product({
+      ...req.body,
+      id: req.params.id,
+    })
+  }
+ 
 
   try {
   
