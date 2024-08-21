@@ -1,12 +1,22 @@
 const cartItemUpdateFormElements = document.querySelectorAll('.cart-item-management');
 const cartTotalPriceElement = document.getElementById('cart-total-price');
 const cartBadgeElements = document.querySelectorAll('.nav-items .badge');
+function storeOriginalQuantity(event) {
+   const form = event.target.closest('form');
+   form.dataset.originalQuantity = form.firstElementChild.value;
+}
 async function updateCartItem(event){
     event.preventDefault();
     const form = event.target;
     const productId = form.dataset.productid;
     const csrfToken = form.dataset.csrf;
     const quantity =  form.firstElementChild.value;
+    const originalQuantity = form.dataset.originalQuantity;
+    if(quantity < 0){
+      form.firstElementChild.value= originalQuantity; 
+        alert('Quantity cannot be less than 0!');
+        return;
+      }
     let response;
  try{
      response = await  fetch('/cart/items',{
@@ -26,7 +36,7 @@ async function updateCartItem(event){
     alert('Something went wrong!');
     return;
  }
- if(!response.ok){
+ if(!response.ok ){
     alert('Something went wrong!');
     return;
  }
@@ -51,5 +61,7 @@ for (const cartBadgeElement of cartBadgeElements)
 
 }
 for (const formElement of cartItemUpdateFormElements){
+   // Store the original quantity when the input is focused
+   formElement.firstElementChild.addEventListener('focus', storeOriginalQuantity);
     formElement.addEventListener('submit',updateCartItem);
 }

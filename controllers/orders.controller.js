@@ -1,11 +1,16 @@
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 const Order = require('../models/pg.order.model');
 const User = require('../models/pg.user.model');
+const sessionFlash = require("../util/session-flash");
+const orderValidation= require('../util/order.validation')
 async function getOrders(req, res,next) {
+ 
   try {
     const orders = await Order.findAllForUser(res.locals.uid);
     res.render('customer/orders/all-orders', {
       orders: orders,
+    
+
     });
   } catch (error) {
     next(error);
@@ -13,13 +18,24 @@ async function getOrders(req, res,next) {
 }
 
 async function addOrder(req, res, next) {
+
+  if (!orderValidation.orderIsValid(res.locals.cart)) {
+    sessionFlash.flashDataToSession(req,{
+      errorMessage:"Please check for errors and try again" ,
+    },function(){
+      res.redirect('/cart')
+    })
+    return
+  }
   const cart = res.locals.cart;
   let userDocument;
   try {
     userDocument = await User.findById(res.locals.uid);
+    
   } catch (error) {
     return next(error);
   }
+ 
 
   // const order = new Order(cart, userDocument); Mongodb
   const order = new Order(cart, userDocument); // pgsql
@@ -42,7 +58,7 @@ async function addOrder(req, res, next) {
           product_data: {
             name: item.product.title,
           },
-          unit_amount: +item.product.price.toFixed(2) * 100// unit_amount takes price in cents so we mulitply by 100
+          unit_amount: +item.product.price * 100// unit_amount takes price in cents so we mulitply by 100
         },
         quantity: item.quantity,
       }
@@ -51,7 +67,7 @@ async function addOrder(req, res, next) {
     success_url: 'http://localhost:3000/orders/success',
     cancel_url: 'http://localhost:3000/orders/failure',
   });
-
+  
   res.redirect(303, session.url);
 }
 function getSuccess(req,res){

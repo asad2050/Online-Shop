@@ -2,6 +2,13 @@ const express = require('express');
 const expressSession= require('express-session');
 const createSessionConfig = require('./config/pgSession');
 const {pool} = require('./data/pgDatabase');
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+const helmet = require('helmet');
 const {csrfMiddleware} =require('./middlewares/token.js');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
 const path = require('path');
@@ -19,7 +26,21 @@ const ordersRoutes = require('./routes/orders.routes');
 
 const app= express();
 require("dotenv").config();
+app.use(limiter);
 app.set('view engine','ejs');
+app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "trustedscripts.com"],
+    styleSrc: ["'self'",  "https://fonts.googleapis.com"],
+    imgSrc: ["'self'","https://res.cloudinary.com"],
+    connectSrc: ["'self'", ],
+    fontSrc: ["'self'",,"https://fonts.gstatic.com"],
+    objectSrc: ["'none'"],
+    upgradeInsecureRequests: []
+  }
+}));
 app.set('views',path.join(__dirname,'views'));
 app.use(express.static('public'));
 app.use('/products/assets',express.static('product-data'));

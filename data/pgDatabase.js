@@ -10,7 +10,7 @@ require("dotenv").config();
 //   password: process.env.DB_PASSWORD,
 //   database: process.env.DB_NAME
 // });
-// use this for production with hosted database
+// use this for neon hosted database
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 const pool = new Pool({
   host: PGHOST,

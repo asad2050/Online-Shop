@@ -106,6 +106,17 @@ function getLogin(req, res, error) {
 }
 
 async function login(req, res, next) {
+  
+  if(!validation.userCredentialsAreValid(req.body.email,req.body.password)){
+    sessionFlash.flashDataToSession(req,{
+      errorMessage:"Please check your input",
+      email:req.body.email,
+      password:req.body.password
+    },function(){
+      res.redirect("/login")
+    })
+    return
+  }
   const user = new User(req.body.email, req.body.password);
   let existingUser;
   try {
@@ -143,6 +154,7 @@ function logout(req, res) {
   authUtil.destroyUserAuthSession(req);
   res.redirect("/login");
 }
+
 module.exports = {
   getSignup: getSignup,
   getLogin: getLogin,

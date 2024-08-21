@@ -42,7 +42,7 @@ class User {
 
   static async findById(userId) {
     const res = await pool.query(
-      `SELECT users.id, users.email, users.first_name, users.last_name,users.isAdmin, addresses.street, addresses.postal_code, addresses.city
+      `SELECT users.id, users.email, users.first_name, users.last_name,users."isAdmin", addresses.street, addresses.postal_code, addresses.city
        FROM users
        LEFT JOIN addresses ON users.id = addresses.user_id
        WHERE users.id = $1`,

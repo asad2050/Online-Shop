@@ -22,7 +22,7 @@ async function addToCart(){
         alert('Something went wrong1');
         return;
     }
-    if(!response.ok){
+    if(!response.ok ){
         alert('Something went wrong');
         return;
     }

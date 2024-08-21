@@ -5,7 +5,7 @@ data/db/
 
 .vscode
 onlineShop.session.sql
-*.yml
+docker-compose.yml
 product-data/images/*.png
 product-data/images/*.jpeg
 product-data/images/*.jpg

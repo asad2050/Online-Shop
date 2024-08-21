@@ -1,5 +1,11 @@
     <form action="<%=submitPath %>"  method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
+         <% if(inputData.errorMessage){%>
+        <section class="alert">
+            <h2>Invalid Credentials</h2>
+            <p><%=inputData.errorMessage%></p>
+        </section>
+        <%}%>
         <p>
             <label for="title">Title</label>
             <input type="text" id="title" name="title" value="<%=product.title%>" required >
@@ -7,7 +13,7 @@
         <div id="image-upload-control">
             <p>
                 <label for="image">Image</label>
-                <input type="file" id="image" name="image" accept="image/png,image/jpg" <% if(imageRequired) { %>required<% } %>>
+                <input type="file" id="image" name="image" accept="image/png,image/jpg"  <% if(imageRequired) { %>required<% } %>>
             </p>
             <img src="" alt="Selected image">
         </div>

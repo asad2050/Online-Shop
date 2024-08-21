@@ -36,7 +36,7 @@ CREATE TABLE addresses(
 CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
-    date TIMESTAMP NOT NULL,
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status TEXT NOT NULL,
     total_quantity INTEGER NOT NULL DEFAULT 0, -- New column for total quantity
     total_price NUMERIC(10, 2) NOT NULL DEFAULT 0.00, -- New column for total price

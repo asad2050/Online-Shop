@@ -7,11 +7,12 @@
 <main>
     <h1>Add new Product</h1>
     <%- include('includes/product-form',{ submitPath:'/admin/products', product: {
-title:'',
-summary:'',
-price:'',
-description:'',
+title:inputData.title,
+summary:inputData.summary,
+price:inputData.price,
+description:inputData.description,
     },
+    inputData:inputData,
 imageRequired:true,
  })%>
 </main>

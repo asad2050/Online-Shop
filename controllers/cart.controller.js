@@ -1,14 +1,31 @@
-// const Product = require('../models/product.model');
 const Product = require('../models/pg.product.model');
-
+const { validationResult } = require('express-validator');
+const sessionFlash = require("../util/session-flash");
 function getCart(req,res){
-    res.render('customer/cart/cart');
+  let sessionData= sessionFlash.getSessionData(req);
+  if(!sessionData){
+    sessionData={
+      errorMessage:""
+    }
+  }
+    res.render('customer/cart/cart',{  errorMessage:sessionData.errorMessage
+    });
 }
 async function addCartItem(req,res){
+    const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
     let product;
     
- product= await Product.findById(req.body.productId);
-   
+ try {
+    product = await Product.findById(req.body.productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+  } catch (error) {
+    return next(error);
+  }
     const cart = res.locals.cart;
     cart.addItem(product);
     req.session.cart= cart;
@@ -19,12 +36,12 @@ async function addCartItem(req,res){
     })//successfully added data =201 code.
 }
 function updateCartItem(req,res){
-    try{
-   
-    }catch(error){
-        next(error);
-        return;
-    }
+    const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+    
 const cart = res.locals.cart;
 const updatedItemData=cart.updateItem(req.body.productId, +req.body.quantity);
 req.session.cart= cart;

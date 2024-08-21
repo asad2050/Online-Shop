@@ -1,6 +1,9 @@
 const Product = require('../models/pg.product.model');
 const Order = require('../models/pg.order.model');
 const {uploadOnCloudinary} = require('../util/cloudinary');
+const {validationResult}= require('express-validator');
+const sessionFlash = require("../util/session-flash");
+
 async function getProducts(req, res, next) {
   try {
     const products = await Product.findAll();
@@ -12,17 +15,40 @@ async function getProducts(req, res, next) {
 }
 
 function getNewProduct(req, res) {
-  res.render('admin/products/new-product');
+  let sessionData= sessionFlash.getSessionData(req);
+  if(!sessionData){
+    sessionData={
+      title:'',
+      price:'',
+      summary:'',
+      description:''
+    }
+  }
+  res.render('admin/products/new-product',{inputData:sessionData});
 }
 
 async function createNewProduct(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Handle validation errors
+    sessionFlash.flashDataToSession(req,{
+      errorMessage:"Please check your input",
+      title: req.body.title,
+      price:req.body.price,
+      summary:req.body.summary,
+      description:req.body.description,
+    },function(){
+      res.redirect("/admin/products/new")
+    })
+    return
+  }
+
   let productImage;
   try{
     const imageLocalPath = req.file.path;
     if(!imageLocalPath){
       throw new Error("Image file is required")
     }
-    console.log(imageLocalPath)
      productImage = await uploadOnCloudinary(imageLocalPath)
     if(!productImage && !productImage?.url){
       throw new Error("Image upload failed")
@@ -49,16 +75,34 @@ async function createNewProduct(req, res, next) {
 }
 
 async function getUpdateProduct(req, res, next) {
+  let sessionData= sessionFlash.getSessionData(req);
+  if(!sessionData){
+    sessionData={
+      errorMessage:""
+    }
+  }
   try {
     const product = await Product.findById(req.params.id);
-    res.render('admin/products/update-product', { product: product });
+    res.render('admin/products/update-product', { product: product ,inputData:sessionData});
   } catch (error) {
     next(error);
   }
 }
 
 async function updateProduct(req, res, next) {
-  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Handle validation errors
+    sessionFlash.flashDataToSession(req,{
+      errorMessage:"Please check your input",
+      title: req.body.title,
+      price:req.body.price,
+      summary:req.body.summary
+    },function(){
+      res.redirect("/admin/products/"+req.params.id)
+    })
+    return
+  }
   const imageLocalPath = req.file?.path;
   let product;
   let productImage;
@@ -103,7 +147,16 @@ async function updateProduct(req, res, next) {
 }
 
 async function deleteProduct(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Render the page with errors
+    return res.status(400).json({
+      errors:errors.array(),
+      message: 'Invalid product ID. Please correct the errors and try again.',
+    });
+  }
   let product;
+  
   try {
 
     product = await Product.findById(req.params.id);
@@ -128,6 +181,10 @@ async function getOrders(req, res, next) {
 }
 
 async function updateOrder(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array(),message:"Invalid order ID" });
+  }
   const orderId = req.params.id;
   const newStatus = req.body.newStatus;
 
