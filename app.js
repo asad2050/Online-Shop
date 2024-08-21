@@ -26,7 +26,7 @@ const ordersRoutes = require('./routes/orders.routes');
 
 const app= express();
 require("dotenv").config();
-app.use(limiter);
+// app.use(limiter);
 app.set('view engine','ejs');
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
@@ -48,9 +48,10 @@ app.use(express.urlencoded({extended:false}));
 app.use(express.json());//json()returns a function which is a middleware
 const sessionConfig=createSessionConfig();
 app.use(expressSession(sessionConfig))
+app.use(csrfMiddleware);
 app.use(cartMiddlware);
 app.use(updateCartPriceMiddleware);
-app.use(csrfMiddleware);
+
 app.use(checkAuthStatus);
 app.use(baseRoutes);
 app.use(authRoutes);

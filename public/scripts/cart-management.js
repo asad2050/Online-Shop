@@ -5,6 +5,7 @@ async function addToCart(){
     const productId = addToCartButtonElement.dataset.productid;
     const csrfToken = addToCartButtonElement.dataset.csrf;
     let response;
+    
     try{
  response=   await fetch('/cart/items',
     {

@@ -10,6 +10,7 @@ const genFunc = require("connect-pg-simple");
 //   // return sessionStore
 //   // }
 //   const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+  
 //   // use this for production with hosted database
 //   const PostgresqlStore = genFunc(session);
 //   const sessionStore = new PostgresqlStore({
@@ -20,6 +21,7 @@ const genFunc = require("connect-pg-simple");
 const { pool } = require('../data/pgDatabase'); // Import the pool
 
 function createSessionStore() {
+  
   const PostgresqlStore = genFunc(session);
   const sessionStore = new PostgresqlStore({
     pool: pool, // Use the pool instead of conString
@@ -28,6 +30,18 @@ function createSessionStore() {
 
   return sessionStore;
 }
+// let sessionStoreInstance;
+
+// function createSessionStore() {
+//   if (!sessionStoreInstance) {
+//     const PostgresqlStore = genFunc(session);
+//     sessionStoreInstance = new PostgresqlStore({
+//       conString: `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}/${process.env.PGDATABASE}?sslmode=require`,
+//     });
+//     console.log("Session store initialized.");// Debugging statement
+//   }
+//   return sessionStoreInstance;
+// }
 
 function createSessionConfig() {
   return {
@@ -36,9 +50,10 @@ function createSessionConfig() {
     saveUninitialized: false,
     cookie: {
       httpOnly:true,
-      secure:true,
-      sameSite:'strict',
+      secure:process.env.NODE_ENV === 'production',
+      sameSite:'lax',
       maxAge: 2 * 24 * 60 * 60 * 1000,
+      domain : process.env.COOKIE_DOMAIN,
     }, // define cookieOptions
     store: createSessionStore(),
   };
