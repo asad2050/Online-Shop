@@ -1,8 +1,7 @@
 # Online Shop using PostgreSQL
 
 ## Description
-
-This is a Node.js application using Express and PostgreSQL. The project includes user authentication, session management, file upload functionality with Multer, and integration with the Stripe API for payments. Originally developed as part of the 100 Days of Web Development by Academind using MongoDB, this version is implemented with PostgreSQL. The repository is deployment-ready, following all major security protocols.
+Online Shop a Node.js web application using Express and PostgreSQL and EJS to render templates. The project includes user authentication, session management, file upload functionality with Multer, and integration with the Stripe API for payments. Originally developed as part of the 100 Days of Web Development by Academind using MongoDB, this version is implemented with PostgreSQL. The repository is deployment-ready, following all major security protocols.
 
 ## Table of Contents
 
