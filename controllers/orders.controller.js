@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_KEY);
+const stripe = require('stripe')(process.env.STRIPE_KEY); // comment out/remove this if you do not use stripe.
 const Order = require('../models/pg.order.model');
 const User = require('../models/pg.user.model');
 const sessionFlash = require("../util/session-flash");
@@ -49,6 +49,8 @@ async function addOrder(req, res, next) {
   }
 
   req.session.cart = null;
+  //   res.redirect(303, 'http://localhost:3000/orders/success');
+  // comment out the session part  if you don't want to use stripe. And comment in the above line.
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: cart.items.map(function(item){

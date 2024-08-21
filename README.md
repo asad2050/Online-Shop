@@ -30,8 +30,9 @@ npm install
 
 1. Rename the `sample.env` file to `.env`.
 2. Copy and paste the environment variables into the `.env` file.
-3. Set up the PostgreSQL database and update the `.env` file with the appropriate database connection details. If you're using Neon, your variables should start with `PG_`.
-4. **Cloudinary Setup**:
+3. Create Stripe Account and pass its key in STRIPE_KEY env variable.If you don't want to use stripe Comment Out the part where stripe is used in  `controllers/orders.controller.js`
+4. Set up the PostgreSQL database and update the `.env` file with the appropriate database connection details. If you're using Neon, your variables should start with `PG_`.
+5. **Cloudinary Setup**:
    - Create an account on [Cloudinary](https://cloudinary.com/) if you don’t have one.
    - Obtain your Cloudinary credentials (Cloud Name, API Key, API Secret) from the Cloudinary dashboard.
    - Add the following variables to your `.env` file:
@@ -42,7 +43,7 @@ npm install
      ```
    - Ensure these environment variables are used in your application where you configure Cloudinary.
 
-5. **Finalize the Configuration**:
+6. **Finalize the Configuration**:
    - With all necessary environment variables set, your `.env` file should be properly configured for the database and Cloudinary integration.
 
 ## Database Setup
