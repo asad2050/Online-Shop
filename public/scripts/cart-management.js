@@ -2,6 +2,7 @@ const addToCartButtonElement = document.querySelector('#product-details button')
 const cartBadgeElements = document.querySelectorAll('.nav-items .badge');
 
 async function addToCart(){
+    addToCartButtonElement.disabled = true;
     const productId = addToCartButtonElement.dataset.productid;
     const csrfToken = addToCartButtonElement.dataset.csrf;
     let response;
@@ -19,10 +20,6 @@ async function addToCart(){
         }
 
     });
-    }catch(error){
-        alert('Something went wrong1');
-        return;
-    }
     if(!response.ok ){
         alert('Something went wrong');
         return;
@@ -32,7 +29,13 @@ async function addToCart(){
     for (const cartBadgeElement of cartBadgeElements){
         cartBadgeElement.textContent= newTotalQuantity;
     }
-    
+    }catch(error){
+        alert('Something went wrong1');
+        return;
+    }finally{
+        addToCartButtonElement.disabled = false;
+    }
+  
     
 }
 addToCartButtonElement.addEventListener('click',addToCart);
