@@ -1,5 +1,5 @@
 function handleErrors(error,req,res,next){
-    console.log(error.message);
+    console.log(error);
     if(error.code===404){
         return res.status(404).render('shared/404',{error:error.message});
     }

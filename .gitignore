@@ -2,6 +2,9 @@
 node_modules
 data/pgadmin/
 data/db/
+server.js
+certificate.cst
+privatekey.key
 
 .vscode
 onlineShop.session.sql

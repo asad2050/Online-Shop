@@ -26,7 +26,7 @@ const ordersRoutes = require('./routes/orders.routes');
 
 const app= express();
 require("dotenv").config();
-// app.use(limiter);
+app.use(limiter);
 app.set('view engine','ejs');
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({

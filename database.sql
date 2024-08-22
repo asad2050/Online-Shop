@@ -1,10 +1,16 @@
 -- This file is used to create tables for the database for PostgreSQL
 -- It uses version major version 16 of PostgreSQL.
-CREATE TABLE session (
-    sid VARCHAR PRIMARY KEY,
-    sess JSON NOT NULL,
-    expire TIMESTAMP(6) NOT NULL
-) 
+
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 
 CREATE TABLE products (
